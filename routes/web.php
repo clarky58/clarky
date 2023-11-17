@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/manage-users', [AdminController::class, 'manageUsers'])->name('manage-users');
     Route::get('admin/department', [AdminController::class, 'manageDepartments'])->name('departments');
     Route::post('admin/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('admin/users/delete/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+    Route::post('admin/users/edit/{user}', [AdminController::class, 'editUser'])->name('users.edit');
 
     Route::post('/store-department', [AdminController::class, 'storeDepartment'])->name('departments.store');
 
@@ -56,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/files/download/{file}', [AdminController::class, 'download'])->name('files.download');
     Route::get('admin/files/lock/{file}', [AdminController::class, 'lock'])->name('files.lock');
     Route::get('admin/files/unlock/{file}', [AdminController::class, 'unlock'])->name('files.unlock');
+    Route::get('admin/files/delete/{file}', [AdminController::class, 'deleteFile'])->name('files.delete');
+
 
 
 

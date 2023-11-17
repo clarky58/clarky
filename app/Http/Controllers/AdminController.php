@@ -158,12 +158,11 @@ class AdminController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'phone' => 'nullable|string|max:20',
                 'department' => 'nullable|exists:departments,id',
-                'role' => 'in:admin,secretary,user',
+                'role' => 'required',
             ]);
 
             // Start a database transaction
             DB::beginTransaction();
-
             // Create a new user
             $user = User::create([
                 'name' => $request->input('name'),
@@ -172,9 +171,8 @@ class AdminController extends Controller
                 'email' => $request->input('email'),
                 'phone' => $request->input('phone'),
                 'department_id' => $request->input('department'),
-                'role' => $request->input('role', 'user'),
+                'role' => $request->role,
             ]);
-
             // Commit the transaction if all data is saved successfully
             DB::commit();
             $notification = array(
@@ -194,6 +192,31 @@ class AdminController extends Controller
         }
     }
 
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+        $notification = array(
+            'message' => 'User deleted successfully.',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    public function editUser(User $user)
+    {
+        $user->update([
+            'name' => request()->name,
+            'email' => request()->email,
+            'phone' => request()->phone,
+            'department_id' => request()->department,
+            'role' => request()->role,
+        ]);
+        $notification = array(
+            'message' => 'User updated successfully.',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
     public function manageFiles()
     {
         $files = File::where('is_achieved', false)->get();
@@ -301,6 +324,16 @@ class AdminController extends Controller
         );
 
 
+        return redirect()->back()->with($notification);
+    }
+    public function deleteFile(File $file)
+    {
+
+        $file->delete();
+        $notification = array(
+            'message' => 'File deleted successfully.',
+            'alert-type' => 'success'
+        );
         return redirect()->back()->with($notification);
     }
 
