@@ -38,9 +38,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         Fortify::authenticateUsing(function (LoginRequest $request) {
-            $user = User::where('email',$request->identity)
-                    ->orWhere('name',$request->identity)
-                    ->orWhere('phone',$request->identity)
+            $user = User::where('email',$request->email)
+                    ->orWhere('name',$request->email)
+                    ->orWhere('phone',$request->email)
                     ->first();
             if (
                 $user &&

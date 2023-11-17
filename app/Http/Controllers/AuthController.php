@@ -16,8 +16,9 @@ class AuthController extends Controller
             $url= 'secretary/dashboard';
         }
         elseif($request->user()->role === 'user'){
-            $url = '/dashboard';
+            $url = 'user/dashboard';
         }
+        // dd($url);
 
         return redirect()->intended($url);
     }

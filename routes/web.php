@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SecretaryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,6 +79,44 @@ Route::post('/folders/create', [AdminController::class, 'createFolder'])->name('
 
     Route::middleware(['auth','role:secretary'])->group(function(){
     Route::get('/secretary/dashboard', [SecretaryController::class, 'SecretaryDashboard'])->name('secretary.dashboard');
+    Route::get('/secretary/users', [SecretaryController::class, 'users'])->name('secretary.users');
+    Route::get('/secretary/users/deactivate/{user}', [SecretaryController::class, 'deactivateUser'])->name('secretary.users.deactivate');
+    Route::post('/secretary/users/edit/{user}', [SecretaryController::class, 'editUser'])->name('secretary.users.edit');
+    Route::get('/secretary/files/', [SecretaryController::class, 'files'])->name('secretary.files');
+    Route::get('/secretary/folders/', [SecretaryController::class, 'folders'])->name('secretary.folders');
+    Route::post('/secretary/folders/', [SecretaryController::class, 'storeFolders'])->name('secretary.folders.create');
+    Route::post('/secretary/folders/edit/{folder}', [SecretaryController::class, 'editFolder'])->name('secretary.folders.edit');
+    Route::get('/secretary/folders/delete/{folder}', [SecretaryController::class, 'deleteFolder'])->name('secretary.folders.delete');
+    Route::post('/secretary/files/upload', [SecretaryController::class, 'upload'])->name('secretary.files.upload');
+    Route::get('/secretary/files/download/{file}', [SecretaryController::class, 'download'])->name('secretary.files.download');
+    Route::get('/secretary/files/lock/{file}', [SecretaryController::class, 'lock'])->name('secretary.files.lock');
+    Route::get('/secretary/files/unlock/{file}', [SecretaryController::class, 'unlock'])->name('secretary.files.unlock');
+    Route::get('/secretary/files/delete/{file}', [SecretaryController::class, 'deleteFile'])->name('secretary.files.delete');
+    Route::patch('/secretary/files/{file}', [SecretaryController::class, 'update'])->name('secretary.files.update');
+
+
+
+
+
+
+ });//End of Secretary Middleware
+ Route::middleware(['auth','role:user'])->group(function(){
+    Route::get('/user/dashboard', [UserController::class, 'index'])->name('users.dashboard');
+    Route::get('/user/users', [UserController::class, 'users'])->name('users.users');
+    Route::get('/user/users/deactivate/{user}', [UserController::class, 'deactivateUser'])->name('users.users.deactivate');
+    Route::post('/user/users/edit/{user}', [UserController::class, 'editUser'])->name('users.users.edit');
+    Route::get('/user/files/', [UserController::class, 'files'])->name('users.files');
+    Route::get('/user/folders/', [UserController::class, 'folders'])->name('users.folders');
+    Route::post('/user/folders/', [UserController::class, 'storeFolders'])->name('users.folders.create');
+    Route::post('/user/folders/edit/{folder}', [UserController::class, 'editFolder'])->name('users.folders.edit');
+    Route::get('/user/folders/delete/{folder}', [UserController::class, 'deleteFolder'])->name('users.folders.delete');
+    Route::post('/user/files/upload', [UserController::class, 'upload'])->name('users.files.upload');
+    Route::get('/user/files/download/{file}', [UserController::class, 'download'])->name('users.files.download');
+    Route::get('/user/files/lock/{file}', [UserController::class, 'lock'])->name('users.files.lock');
+    Route::get('/user/files/unlock/{file}', [UserController::class, 'unlock'])->name('users.files.unlock');
+    Route::get('/user/files/delete/{file}', [UserController::class, 'deleteFile'])->name('users.files.delete');
+    Route::patch('/user/files/{file}', [UserController::class, 'update'])->name('users.files.update');
+
  });//End of Secretary Middleware
 
     Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
