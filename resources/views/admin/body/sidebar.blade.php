@@ -19,15 +19,18 @@
           </a>
         </li>
         <li class="nav-item nav-category">File Management</li>
-
+        <li class="nav-item">
+            <a href="{{route('folders')}}" class="nav-link">
+              <i class="link-icon" data-feather="inbox"></i>
+              <span class="link-title">Manage Folders</span>
+            </a>
+          </li>
         <li class="nav-item">
           <a href="{{route('manage-files')}}" class="nav-link">
             <i class="link-icon" data-feather="message-square"></i>
             <span class="link-title">Manage Files</span>
           </a>
         </li>
-
-
         <li class="nav-item">
             <a href="{{route('achieved-files')}}" class="nav-link">
               <i class="link-icon" data-feather="message-square"></i>
@@ -55,16 +58,6 @@
             <ul class="nav sub-menu">
               <li class="nav-item">
                 <a href="{{route('departments')}}" class="nav-link">Departments</a>
-              </li>
-
-
-            </ul>
-          </div>
-
-          <div class="collapse" id="advancedUI">
-            <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="{{route('folders')}}" class="nav-link">Folders</a>
               </li>
 
 

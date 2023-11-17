@@ -54,7 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::get('manage-files', [AdminController::class, 'manageFiles'])->name('manage-files');
     Route::post('admin/files/upload', [AdminController::class, 'upload'])->name('files.upload');
     Route::get('admin/files/download/{file}', [AdminController::class, 'download'])->name('files.download');
-
+    Route::get('admin/files/lock/{file}', [AdminController::class, 'lock'])->name('files.lock');
+    Route::get('admin/files/unlock/{file}', [AdminController::class, 'unlock'])->name('files.unlock');
 
 
 

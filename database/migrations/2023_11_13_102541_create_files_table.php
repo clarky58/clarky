@@ -19,6 +19,13 @@ return new class extends Migration
             $table->string('is_achieved')->default(false);
             $table->string('folder_id')->nullable();
             $table->enum('status',['active','inactive'])->default('active');
+            $table->boolean('is_locked')->default(false);
+            $table->string('locked_by')->nullable();
+            $table->string('locked_at')->nullable();
+            $table->string('locked_until')->nullable();
+            $table->boolean('is_encrypted')->default(false);
+            $table->string('encrypted_by')->nullable();
+            $table->string('encrypted_at')->nullable();
             $table->timestamps();
         });
     }

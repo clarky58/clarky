@@ -17,10 +17,10 @@ class AdminController extends Controller
     {
         // dd('admin');
         return view('admin.index');
+    } //End Method
 
-    }//End Method
-
-    public function AdminLogout(Request $request){
+    public function AdminLogout(Request $request)
+    {
 
         Auth::guard('web')->logout();
 
@@ -29,129 +29,126 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('login');
-    }////End Method
+    } ////End Method
 
     // public function AdminLogin(){
     //     return view('admin.admin_login');
     // }
-    public function AdminProfile(){
+    public function AdminProfile()
+    {
         $id = Auth::user()->id;
         $profileData =  User::find($id);
 
-        return view('admin.admin_profile_view',compact('profileData'));
+        return view('admin.admin_profile_view', compact('profileData'));
     }
 
-    public function AdminProfileStore(Request $request){
-       try{
+    public function AdminProfileStore(Request $request)
+    {
+        try {
 
+            $id = Auth::user()->id;
+            $profileData =  User::find($id);
+            $profileData->username = $request->username;
+            $profileData->name = $request->name;
+            $profileData->email = $request->email;
+            $profileData->phone = $request->phone;
+            $profileData->address = $request->address;
+
+            if ($request->file('photo')) {
+                $file = $request->file('photo');
+                @unlink(public_path('upload/admin_images' . $profileData->photo));
+                $filename = date('YmdHi') . $file->getClientOriginalName();
+                //dd($filename);
+
+                $file->move(public_path('upload/admin_images/') . $filename);
+                $profileData['photo'] = $filename;
+            }
+            $profileData->save();
+
+            $notification = array(
+                'message' => 'Admin Profile Updated Successfully',
+                'alert-type' => 'success'
+            );
+            return redirect()->back()->with($notification);
+        } catch (Exception $exception) {
+            dd($exception->getMessage());
+            return back()->with('error', $exception->getMessage());
+        }
+    }
+    public function AdminChangePassword()
+    {
         $id = Auth::user()->id;
         $profileData =  User::find($id);
-        $profileData->username = $request->username;
-        $profileData->name = $request->name;
-        $profileData->email = $request->email;
-        $profileData->phone = $request->phone;
-        $profileData->address = $request->address;
 
-        if($request->file('photo')){
-            $file = $request->file('photo');
-            @unlink(public_path('upload/admin_images'.$profileData->photo));
-            $filename = date('YmdHi').$file->getClientOriginalName();
-            //dd($filename);
+        return view('admin.admin_change_password', compact('profileData'));
+    }
 
-            $file->move(public_path('upload/admin_images/').$filename);
-            $profileData['photo'] = $filename;
-
+    public function AdminUpdatePassword(Request $request)
+    {
+        // $id = Auth::user()->id;
+        // $profileData =  User::find($id);
+        //validation
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed',
+        ]);
+        //match old password
+        if (!Hash::check($request->old_password, auth::user()->password)) {
+            $notification = array(
+                'message' => 'Old Password Does Not Match',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
         }
-        $profileData->save();
+        //Update the new password
+        User::whereId(auth()->user()->id)->update([
+            'password' =>
+            Hash::make($request->new_password)
 
+        ]);
         $notification = array(
-            'message' => 'Admin Profile Updated Successfully',
+            'message' => 'Password Changed Successfully',
             'alert-type' => 'success'
         );
-        return redirect()->back()->with($notification);
-
-
-       }
-       catch(Exception $exception)
-       {
-        dd($exception->getMessage());
-        return back()->with('error', $exception->getMessage());
-
-       }
-
-    }
-    public function AdminChangePassword(){
-        $id = Auth::user()->id;
-        $profileData =  User::find($id);
-
-        return view('admin.admin_change_password',compact('profileData'));
-
+        return back()->with($notification);
     }
 
-    public function AdminUpdatePassword(Request $request){
-       // $id = Auth::user()->id;
-       // $profileData =  User::find($id);
-//validation
-$request->validate([
-    'old_password' => 'required',
-    'new_password' => 'required|confirmed',
-]);
-//match old password
-if (!Hash::check($request->old_password, auth::user()->password)){
-$notification = array(
-    'message' => 'Old Password Does Not Match',
-    'alert-type' => 'error'
-);
-return back()->with($notification);
-
-    }
-    //Update the new password
-    User::whereId(auth()->user()->id)->update([
-        'password' =>
-        Hash::make($request->new_password)
-
-    ]);
-    $notification = array(
-        'message' => 'Password Changed Successfully',
-        'alert-type' => 'success'
-    );
-    return back()->with($notification);
-    }
-
-    public function manageUsers(){
+    public function manageUsers()
+    {
         $users = User::all();
         $departments = Department::all();
-        return view('admin.manage-users',compact('users',  'departments'));
+        return view('admin.manage-users', compact('users',  'departments'));
     }
 
-    public function manageDepartments(){
+    public function manageDepartments()
+    {
 
         $departments = Department::all();
-        return view('admin.manage-departments',compact('departments'));
+        return view('admin.manage-departments', compact('departments'));
     }
 
     public function storeDepartment(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'code' => 'required|string|max:50',
-        'status' => 'in:active,inactive',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:50',
+            'status' => 'in:active,inactive',
+        ]);
 
-    Department::create([
-        'name' => $request->input('name'),
-        'code' => $request->input('code'),
-        'status' => $request->input('status', 'active'),
-    ]);
+        Department::create([
+            'name' => $request->input('name'),
+            'code' => $request->input('code'),
+            'status' => $request->input('status', 'active'),
+        ]);
 
-    $notification = array(
-        'message' => 'Added Department Successfully',
-        'alert-type' => 'success'
-    );
-    return redirect()->back()->with($notification);
-}
+        $notification = array(
+            'message' => 'Added Department Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
 
-public function storeUser(Request $request)
+    public function storeUser(Request $request)
     {
         try {
             // Validate the form data
@@ -190,17 +187,18 @@ public function storeUser(Request $request)
             // Rollback the transaction in case of an error
             DB::rollBack();
             $notification = array(
-                'message' => 'Failed to add user'. $e->getMessage(),
+                'message' => 'Failed to add user' . $e->getMessage(),
                 'alert-type' => 'error'
             );
             return redirect()->back()->with($notification);
         }
     }
 
-    public function manageFiles(){
+    public function manageFiles()
+    {
         $files = File::where('is_achieved', false)->get();
         $folders = Folder::all();
-        return view('admin.manage-files',compact('files','folders'));
+        return view('admin.manage-files', compact('files', 'folders'));
     }
     public function upload(Request $request)
     {
@@ -279,12 +277,38 @@ public function storeUser(Request $request)
 
         return redirect()->back()->with($notification);
     }
+    public function lock(File $file)
+    {
+        // Update the file's status to "inactive" or archive it
+        $file->update(['is_locked' => true]);
 
-    public function viewArchivedFiles(){
+        $notification = array(
+            'message' => 'File Locked successfully.',
+            'alert-type' => 'success'
+        );
+
+
+        return redirect()->back()->with($notification);
+    }
+    public function unlock(File $file)
+    {
+        // Update the file's status to "inactive" or archive it
+        $file->update(['is_locked' => false]);
+
+        $notification = array(
+            'message' => 'File unlocked successfully.',
+            'alert-type' => 'success'
+        );
+
+
+        return redirect()->back()->with($notification);
+    }
+
+    public function viewArchivedFiles()
+    {
 
         $files = File::where('is_achieved', true)->get();
-        return view('admin.achieved-files',compact('files'));
-
+        return view('admin.achieved-files', compact('files'));
     }
 
     public function unarchive(File $file)
@@ -301,11 +325,12 @@ public function storeUser(Request $request)
         return redirect()->back()->with($notification);
     }
 
-    public function viewFolders(){
+    public function viewFolders()
+    {
 
         $folders = Folder::all();
         $departments = Department::all();
-        return view('admin.folders',compact('folders','departments'));
+        return view('admin.folders', compact('folders', 'departments'));
     }
 
     public function createFolder(Request $request)
@@ -327,5 +352,4 @@ public function storeUser(Request $request)
 
         return redirect()->back()->with($notification);
     }
-
 }

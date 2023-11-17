@@ -25,7 +25,7 @@
                @foreach ($files as $file)
                     <tr>
 
-                        <td>{{ $file->name }}</td>
+                        <td>{{ $file->name }} @if($file->is_locked)<span class="alert-danger">Locked</span>@endif</td>
                         <td>{{ $file->user->name }}</td>
                         <td>
                             @if ($file->status == 'active')
@@ -35,6 +35,11 @@
                             @endif
                         </td>
                         <td>
+                            @if($file->is_locked)
+                            <a  class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#unlockFileModal{{ $file->id }}">
+                                unlock
+                            </a>
+                            @else
                             <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#archiveFileModal{{ $file->id }}">
                                 Archive File
                             </a>
@@ -45,7 +50,11 @@
                             <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editFileModal{{ $file->id }}">
                                 Edit
                             </a>
-                            <a  class="btn btn-danger btn-sm">Delete</a>
+                            {{-- lock file --}}
+                            <a  class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#lockFileModal{{ $file->id }}">
+                                Lock
+                            </a>
+                            @endif
                         </td>
                     <tr/>
 
@@ -75,22 +84,56 @@
                     </div>
 
                     <div class="modal fade" id="archiveFileModal{{ $file->id }}" tabindex="-1" aria-labelledby="archiveFileModalLabel{{ $file->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="archiveFileModalLabel{{ $file->id }}">Archive File</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Are you sure you want to archive this file?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <a href="{{ route('files.archive', $file->id) }}" class="btn btn-primary">Yes, Archive</a>
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="archiveFileModalLabel{{ $file->id }}">Archive File</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to archive this file?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <a href="{{ route('files.archive', $file->id) }}" class="btn btn-primary">Yes, Archive</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <div class="modal fade" id="lockFileModal{{ $file->id }}" tabindex="-1" aria-labelledby="lockFileModalLabel{{ $file->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="unlockFileModalLabel{{ $file->id }}">Lock File</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to lock this file?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <a href="{{ route('files.lock', $file->id) }}" class="btn btn-primary">Yes, lock</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="unlockFileModal{{ $file->id }}" tabindex="-1" aria-labelledby="inlockFileModalLabel{{ $file->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="unlockFileModalLabel{{ $file->id }}">Unlock File</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to unlock this file?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <a href="{{ route('files.unlock', $file->id) }}" class="btn btn-primary">Yes, unlock</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     @endforeach
             </tbody>
