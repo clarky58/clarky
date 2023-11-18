@@ -16,6 +16,7 @@
 
                     <th>File Name</th>
                     <th>Uploaded By</th>
+                    <th>Access Type</th>
                     <th>Status</th>
                     <th>Action</th>
 
@@ -27,6 +28,7 @@
 
                         <td>{{ $file->name }} @if($file->is_locked)<span class="alert-danger">Locked</span>@endif</td>
                         <td>{{ $file->user->name }}</td>
+                        <td>@if($file->type=='open')Public @else Private @endif</td>
                         <td>
                             @if ($file->status == 'active')
                             <span class="badge bg-success">Active</span>
@@ -75,6 +77,13 @@
                                         <div class="mb-3">
                                             <label for="new_title" class="form-label">New Title</label>
                                             <input type="text" class="form-control" id="new_title" name="new_title" value="{{ $file->name }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Select Access Type</label>
+                                            <select class="form-select" id="type" name="type" required>
+                                                <option @if($file->type=='open') selected @endif value="open">Public</option>
+                                                <option @if($file->type=='restricted') selected @endif value="restricted">Private</option>
+                                            </select>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -184,6 +193,14 @@
                             @foreach ($folders as $folder)
                                 <option value="{{ $folder->id }}">{{ $folder->name }}</option>
                             @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Select Access Type</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="" selected disabled>Select Type</option>
+                            <option value="open">Public</option>
+                            <option value="restricted">Private</option>
                         </select>
                     </div>
                     <div class="mb-3">

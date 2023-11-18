@@ -102,20 +102,13 @@ Route::post('/folders/create', [AdminController::class, 'createFolder'])->name('
  });//End of Secretary Middleware
  Route::middleware(['auth','role:user'])->group(function(){
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('users.dashboard');
-    Route::get('/user/users', [UserController::class, 'users'])->name('users.users');
-    Route::get('/user/users/deactivate/{user}', [UserController::class, 'deactivateUser'])->name('users.users.deactivate');
-    Route::post('/user/users/edit/{user}', [UserController::class, 'editUser'])->name('users.users.edit');
-    Route::get('/user/files/', [UserController::class, 'files'])->name('users.files');
-    Route::get('/user/folders/', [UserController::class, 'folders'])->name('users.folders');
-    Route::post('/user/folders/', [UserController::class, 'storeFolders'])->name('users.folders.create');
-    Route::post('/user/folders/edit/{folder}', [UserController::class, 'editFolder'])->name('users.folders.edit');
-    Route::get('/user/folders/delete/{folder}', [UserController::class, 'deleteFolder'])->name('users.folders.delete');
+    Route::get('/user/files', [UserController::class, 'files'])->name('users.files');
     Route::post('/user/files/upload', [UserController::class, 'upload'])->name('users.files.upload');
     Route::get('/user/files/download/{file}', [UserController::class, 'download'])->name('users.files.download');
-    Route::get('/user/files/lock/{file}', [UserController::class, 'lock'])->name('users.files.lock');
-    Route::get('/user/files/unlock/{file}', [UserController::class, 'unlock'])->name('users.files.unlock');
     Route::get('/user/files/delete/{file}', [UserController::class, 'deleteFile'])->name('users.files.delete');
     Route::patch('/user/files/{file}', [UserController::class, 'update'])->name('users.files.update');
+    Route::get('/user/file/request', [UserController::class, 'fileRequest'])->name('users.files.requests');
+    Route::post('/user/file/request', [UserController::class, 'storeRequest'])->name('users.files.request');
 
  });//End of Secretary Middleware
 

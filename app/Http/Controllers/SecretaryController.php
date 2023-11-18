@@ -10,7 +10,12 @@ use Illuminate\Http\Request;
 class SecretaryController extends Controller
 {
     public function SecretaryDashboard(){
-        return view('secretary.secretary_dashboard');
+        $users = User::where('department_id',auth()->user()->department_id)->count();
+        $folders = auth()->user()->department->folders->count();
+        $files = File::whereHas('folder',function($q){
+            $q->where('department_id',auth()->user()->department_id);
+        })->count();
+        return view('secretary.secretary_dashboard',compact('users','folders','files'));
     }
     public function users(){
         $users = User::where('department_id',auth()->user()->department_id)->get();
@@ -97,7 +102,7 @@ class SecretaryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'file' => 'required|mimes:pdf,doc,docx,txt|max:2048', // Adjust the allowed file types and size
-            'depa'
+            'type' => 'required',
         ]);
 
         $uploadedFile = $request->file('file');
@@ -108,6 +113,7 @@ class SecretaryController extends Controller
             'name' => $request->input('name'),
             'user_id' => auth()->id(), // Assuming you have user authentication
             'path' => $path,
+            'type' => $request->input('type'),
             'folder_id' => $request->input('folder_id'),
         ]);
         $notification = array(
@@ -139,10 +145,12 @@ class SecretaryController extends Controller
     {
         $request->validate([
             'new_title' => 'required|string|max:255',
+            'type'=> 'required',
         ]);
 
         $file->update([
             'name' => $request->input('new_title'),
+            'type' => $request->input('type'),
         ]);
 
 

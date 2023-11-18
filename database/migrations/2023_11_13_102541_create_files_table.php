@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_encrypted')->default(false);
             $table->string('encrypted_by')->nullable();
             $table->string('encrypted_at')->nullable();
+            $table->enum('type',['open','restricted'])->default('open');
             $table->timestamps();
         });
     }

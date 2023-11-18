@@ -15,8 +15,10 @@ class AdminController extends Controller
 {
     public function AdminDashboard()
     {
-        // dd('admin');
-        return view('admin.index');
+        $files = File::all()->count();
+        $folders = Folder::all()->count();
+        $departments = Department::all()->count();
+        return view('admin.index', compact('files', 'folders', 'departments'));
     } //End Method
 
     public function AdminLogout(Request $request)
@@ -228,7 +230,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'file' => 'required|mimes:pdf,doc,docx,txt|max:2048', // Adjust the allowed file types and size
-            'depa'
+            'type' => 'required',
         ]);
 
         $uploadedFile = $request->file('file');
@@ -239,6 +241,7 @@ class AdminController extends Controller
             'name' => $request->input('name'),
             'user_id' => auth()->id(), // Assuming you have user authentication
             'path' => $path,
+            'type' => $request->input('type'),
             'folder_id' => $request->input('folder_id'),
         ]);
         $notification = array(
@@ -270,10 +273,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'new_title' => 'required|string|max:255',
+            'type'=> 'required',
         ]);
 
         $file->update([
             'name' => $request->input('new_title'),
+            'type' => $request->input('type'),
         ]);
 
 

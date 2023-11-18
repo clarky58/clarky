@@ -21,13 +21,13 @@
         </li>
         <li class="nav-item nav-category">Files</li>
         <li class="nav-item">
-          <a href="pages/apps/chat.html" class="nav-link">
+          <a href="{{route('users.files')}}" class="nav-link">
             <i class="link-icon" data-feather="file"></i>
             <span class="link-title">My Files</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/apps/calendar.html" class="nav-link">
+          <a href="{{route('users.files.requests')}}" class="nav-link">
             <i class="link-icon" data-feather="repeat"></i>
             <span class="link-title">Request Files</span>
           </a>

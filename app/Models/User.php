@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'user_id')->where('folder_id', null);
+    }
+
+    public function fileRequests()
+    {
+        return $this->hasMany(FileRequest::class, 'user_id');
+    }
 }

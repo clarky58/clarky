@@ -57,19 +57,12 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="{{ route('secretary.files.update', $file->id) }}">
+                                    <form method="POST" action="{{ route('users.files.update', $file->id) }}">
                                         @csrf
                                         @method('PATCH')
                                         <div class="mb-3">
                                             <label for="new_title" class="form-label">New Title</label>
                                             <input type="text" class="form-control" id="new_title" name="new_title" value="{{ $file->name }}" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Select Access Type</label>
-                                            <select class="form-select" id="type" name="type" required>
-                                                <option @if($file->type=='open') selected @endif value="open">Public</option>
-                                                <option @if($file->type=='restricted') selected @endif value="restricted">Private</option>
-                                            </select>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -93,7 +86,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <a href="{{ route('secretary.files.delete', $file->id) }}" class="btn btn-primary">Yes, delete</a>
+                                    <a href="{{ route('users.files.delete', $file->id) }}" class="btn btn-primary">Yes, delete</a>
                                 </div>
                             </div>
                         </div>
@@ -118,26 +111,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{{ route('secretary.files.upload') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('users.files.upload') }}" enctype="multipart/form-data">
                     @csrf
-
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Select Folder</label>
-                        <select class="form-select" id="folder_id" name="folder_id" required>
-                            <option value="" selected disabled>Select Folder</option>
-                            @foreach ($folders as $folder)
-                                <option value="{{ $folder->id }}">{{ $folder->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Select Access Type</label>
-                        <select class="form-select" id="type" name="type" required>
-                            <option value="" selected disabled>Select Type</option>
-                            <option value="open">Public</option>
-                            <option value="restricted">Private</option>
-                        </select>
-                    </div>
                     <div class="mb-3">
                         <label for="name" class="form-label">File Name</label>
                         <input type="text" class="form-control" id="name" name="name" required>
