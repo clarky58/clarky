@@ -6,6 +6,7 @@ use App\Models\File;
 use App\Models\User;
 use App\Models\Folder;
 use App\Models\Department;
+use App\Models\FileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,8 @@ class AdminController extends Controller
         $files = File::all()->count();
         $folders = Folder::all()->count();
         $departments = Department::all()->count();
-        return view('admin.index', compact('files', 'folders', 'departments'));
+        $requests = FileRequest::all();
+        return view('admin.index', compact('files', 'folders', 'departments', 'requests'));
     } //End Method
 
     public function AdminLogout(Request $request)

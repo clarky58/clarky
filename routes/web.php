@@ -37,15 +37,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
+Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
 //Admin group middleware
     Route::middleware(['auth','role:admin'])->group(function(){
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
     Route::post('/admin/profile/store', [AdminController::class, 'AdminProfileStore'])->name('admin.profile.store');
-    Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
-    Route::post('/admin/update/password', [AdminController::class, 'AdminUpdatePassword'])->name('admin.update.password');
+
 
     Route::get('admin/manage-users', [AdminController::class, 'manageUsers'])->name('manage-users');
     Route::get('admin/department', [AdminController::class, 'manageDepartments'])->name('departments');
@@ -93,6 +93,11 @@ Route::post('/folders/create', [AdminController::class, 'createFolder'])->name('
     Route::get('/secretary/files/unlock/{file}', [SecretaryController::class, 'unlock'])->name('secretary.files.unlock');
     Route::get('/secretary/files/delete/{file}', [SecretaryController::class, 'deleteFile'])->name('secretary.files.delete');
     Route::patch('/secretary/files/{file}', [SecretaryController::class, 'update'])->name('secretary.files.update');
+    Route::get('/secretary/files/requests/', [SecretaryController::class, 'fileRequests'])->name('secretary.file.requests');
+    Route::get('/secretary/files/requests/approve/{request}', [SecretaryController::class, 'approveFileRequests'])->name('secretary.file.requests.approve');
+    Route::get('/secretary/files/requests/reject/{request}', [SecretaryController::class, 'rejectFileRequests'])->name('secretary.file.requests.reject');
+    Route::get('/secretary/files/requests/cancel/{request}', [SecretaryController::class, 'cancelFileRequests'])->name('secretary.file.requests.cancel');
+
 
 
 
@@ -102,13 +107,17 @@ Route::post('/folders/create', [AdminController::class, 'createFolder'])->name('
  });//End of Secretary Middleware
  Route::middleware(['auth','role:user'])->group(function(){
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('users.dashboard');
-    Route::get('/user/files', [UserController::class, 'files'])->name('users.files');
-    Route::post('/user/files/upload', [UserController::class, 'upload'])->name('users.files.upload');
+    Route::get('/user/files/', [UserController::class, 'files'])->name('users.files');
+    Route::post('/user/files/upload/', [UserController::class, 'upload'])->name('users.files.upload');
     Route::get('/user/files/download/{file}', [UserController::class, 'download'])->name('users.files.download');
     Route::get('/user/files/delete/{file}', [UserController::class, 'deleteFile'])->name('users.files.delete');
     Route::patch('/user/files/{file}', [UserController::class, 'update'])->name('users.files.update');
     Route::get('/user/file/request', [UserController::class, 'fileRequest'])->name('users.files.requests');
     Route::post('/user/file/request', [UserController::class, 'storeRequest'])->name('users.files.request');
+    Route::get('/user/file/request/delete/{request}', [UserController::class, 'cancelRequest'])->name('users.files.request.delete');
+    Route::get('/unresticted', [UserController::class, 'publicFiles'])->name('users.public.files');
+    Route::get('/approved', [UserController::class, 'approvedFiles'])->name('users.approved.files');
+
 
  });//End of Secretary Middleware
 

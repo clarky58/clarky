@@ -32,13 +32,7 @@
             </a>
           </li>
         <li class="nav-item">
-            <a href="pages/apps/chat.html" class="nav-link">
-              <i class="link-icon" data-feather="file"></i>
-              <span class="link-title">Accessed Files</span>
-            </a>
-          </li>
-        <li class="nav-item">
-          <a href="pages/apps/calendar.html" class="nav-link">
+          <a href="{{route('secretary.file.requests')}}" class="nav-link">
             <i class="link-icon" data-feather="repeat"></i>
             <span class="link-title">File Requests</span>
           </a>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\FileRequest;
 use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,8 +15,10 @@ class SecretaryController extends Controller
         $folders = auth()->user()->department->folders->count();
         $files = File::whereHas('folder',function($q){
             $q->where('department_id',auth()->user()->department_id);
-        })->count();
-        return view('secretary.secretary_dashboard',compact('users','folders','files'));
+        })->where('is_locked',0)->count();
+        $department_users = User::where('department_id',auth()->user()->department_id)->pluck('id')->toArray();
+        $requests = FileRequest::whereIn('user_id',$department_users)->get();
+        return view('secretary.secretary_dashboard',compact('users','folders','files','requests'));
     }
     public function users(){
         $users = User::where('department_id',auth()->user()->department_id)->get();
@@ -51,7 +54,7 @@ class SecretaryController extends Controller
     {
         $files = File::whereHas('folder',function($q){
             $q->where('department_id',auth()->user()->department_id);
-        })->get();
+        })->where('is_locked',0)->get();
         $folders = auth()->user()->department->folders;
         return view('secretary.manage-files',compact('files','folders'));
     }
@@ -232,6 +235,42 @@ class SecretaryController extends Controller
         );
 
 
+        return redirect()->back()->with($notification);
+    }
+
+    public function fileRequests()
+    {
+        $department_users = User::where('department_id',auth()->user()->department_id)->pluck('id')->toArray();
+        $requests = FileRequest::whereIn('user_id',$department_users)->get();
+        return view('secretary.manage-requests', compact('requests'));
+    }
+
+    public function approveFileRequests(FileRequest $request)
+    {
+        $request->update(['status' => 'approved']);
+        $notification = array(
+            'message' => 'File Request approved successfully.',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
+    public function rejectFileRequests(FileRequest $request)
+    {
+        $request->update(['status' => 'rejected']);
+        $notification = array(
+            'message' => 'File Request rejected successfully.',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    public function cancelFileRequests(FileRequest $request)
+    {
+        $request->delete();
+        $notification = array(
+            'message' => 'File Request cancelled successfully.',
+            'alert-type' => 'success'
+        );
         return redirect()->back()->with($notification);
     }
 

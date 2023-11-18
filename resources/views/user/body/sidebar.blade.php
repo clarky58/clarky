@@ -33,18 +33,11 @@
           </a>
         </li>
         <li class="nav-item">
-            <a href="pages/apps/calendar.html" class="nav-link">
+            <a href="{{route('users.public.files')}}" class="nav-link">
               <i class="link-icon" data-feather="folder"></i>
-              <span class="link-title">All Files</span>
+              <span class="link-title">All Public Files</span>
             </a>
           </li>
-        <li class="nav-item">
-            <a href="pages/apps/calendar.html" class="nav-link">
-              <i class="link-icon" data-feather="upload"></i>
-              <span class="link-title">Upload Files</span>
-            </a>
-          </li>
-
       </ul>
     </div>
   </nav>

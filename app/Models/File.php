@@ -19,4 +19,9 @@ class File extends Model
     {
         return $this->belongsTo(Folder::class, 'folder_id');
     }
+
+    public function fileRequests()
+    {
+        return $this->hasMany(FileRequest::class, 'file_id');
+    }
 }

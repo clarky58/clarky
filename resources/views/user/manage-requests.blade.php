@@ -31,18 +31,23 @@
                         <td>{{ $request->file->type}}</td>
                         <td>
                             @if ($request->status == 'pending')
-                            <span class="badge bg-success">Pending</span>
-                            @elseif ($file->status == 'rejected')
-                            <span class="badge bg-warning">Rejected</span>
+                            <span class="badge bg-warning">Pending</span>
+                            @elseif ($request->status == 'approved')
+                            <span class="badge bg-success">Approved</span>
                             @else
-                            <span class="badge bg-danger">unknown</span>
+                            <span class="badge bg-danger">Returned</span>
                             @endif
                         </td>
                         <td>
-                            <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#editFileModal{{ $request->file->id }}">
+                            @if($request->status == 'pending' || $request->status == 'rejected')
+                            <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelFileRequestModal{{ $request->id }}">
                                 Cancel Request
                             </a>
-
+                            @else
+                            <a href="{{route('users.files.download',$request->file_id)}}" class="btn btn-info btn-sm">
+                                Download
+                            </a>
+                            @endif
                         </td>
                     <tr/>
 
@@ -58,7 +63,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <a href="{{ route('users.files.delete', $request->id) }}" class="btn btn-primary">Yes, Cancel</a>
+                                    <a href="{{ route('users.files.request.delete', $request) }}" class="btn btn-primary">Yes, Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -67,6 +72,47 @@
                     @endforeach
             </tbody>
         </table>
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="requestFileModal" tabindex="-1" aria-labelledby="requestFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="requestFileModalLabel">Upload File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('users.files.request') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="file_id" class="form-label">Select File</label>
+                        <select class="form-select" id="file_id" name="file_id" required>
+                            <option value="" selected disabled>Select File</option>
+                            @foreach ($files as $file)
+                                <option value="{{ $file->id }}">{{ $file->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason</label>
+                        <input type="text" class="form-control" id="reason" name="reason" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Request File</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 
 

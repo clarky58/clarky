@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\FileRequest;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('user.dashboard');
+        $requests = auth()->user()->fileRequests;
+        $my_files = auth()->user()->files->where('type','restricted')->count();
+        return view('user.dashboard',compact('requests','my_files'));
     }
 
     public function files()
@@ -90,9 +93,10 @@ class UserController extends Controller
     public function fileRequest()
     {
         $requests = auth()->user()->fileRequests;
-        $files = File::whereHas('folder',function($q){
-            $q->where('department_id',auth()->user()->department_id);
-        })->where('type','restricted')->get();
+        $files_requested = auth()->user()->fileRequests->pluck('file_id')->toArray();
+        $department_files = auth()->user()->department->files->where('type','restricted')->pluck('id')->toArray();
+        $files_not_requested = array_diff($department_files,$files_requested);
+        $files = File::whereIn('id',$files_not_requested)->get();
         return view('user.manage-requests',compact('requests','files'));
     }
 
@@ -114,5 +118,28 @@ class UserController extends Controller
         );
 
         return redirect()->back()->with($notification);
+    }
+
+    public function cancelRequest(FileRequest $request)
+    {
+        $request->delete();
+        $notification = array(
+            'message' => 'File Request cancelled successfully.',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
+    }
+
+    public function publicFiles()
+    {
+        $files = auth()->user()->department->files->where('type','open')->where('is_locked',0);
+        return view('user.public-files',compact('files'));
+    }
+
+    public function approvedFiles()
+    {
+        $files = auth()->user()->department->files->where('type','open')->where('is_locked',0);
+        return view('user.public-files',compact('files'));
     }
 }
