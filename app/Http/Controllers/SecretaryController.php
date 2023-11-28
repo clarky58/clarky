@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class SecretaryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function SecretaryDashboard(){
         $users = User::where('department_id',auth()->user()->department_id)->count();
         $folders = auth()->user()->department->folders->count();
@@ -92,6 +96,12 @@ class SecretaryController extends Controller
 
     public function deleteFolder(Folder $folder)
     {
+
+        $files = File::where('folder_id',$folder->id)->get();
+        foreach($files as $file){
+            FileRequest::where('file_id',$file->id)->delete();
+            $file->delete();
+        }
         $folder->delete();
         $notification = array(
             'message' => 'Folder deleted successfully.',
@@ -208,7 +218,7 @@ class SecretaryController extends Controller
     }
     public function deleteFile(File $file)
     {
-
+        FileRequest::where('file_id',$file->id)->delete();
         $file->delete();
         $notification = array(
             'message' => 'File deleted successfully.',

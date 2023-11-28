@@ -70,8 +70,9 @@ License: For each use you must have a valid license purchased only from above li
                                 <div class="col-md-8 ps-md-0">
                                     <div class="auth-form-wrapper px-4 py-5">
                                         <a href="#"
-                                            class="noble-ui-logo logo-light d-block mb-2">MMCZ<span>F.M.S</span></a>
-                                        <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
+                                            class="noble-ui-logo logo-light d-block mb-2"><p><img src="{{ asset('upload/logo.png') }}" alt="Logo" width="400" height="100"></p>
+                                         <p style="color: white;">File Management System</p></a>
+                                        <h5 class="text-muted fw-normal mb-4"></h5>
                                         <form method="POST" action="{{ route('login') }}">
                                             @csrf
                                             <div class="mb-3">

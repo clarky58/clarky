@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function AdminDashboard()
     {
         $files = File::all()->count();
@@ -335,7 +339,7 @@ class AdminController extends Controller
     }
     public function deleteFile(File $file)
     {
-
+        FileRequest::where('file_id',$file->id)->delete();
         $file->delete();
         $notification = array(
             'message' => 'File deleted successfully.',
