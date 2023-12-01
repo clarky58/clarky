@@ -100,6 +100,54 @@ class AdminController extends Controller
             'old_password' => 'required',
             'new_password' => 'required|confirmed',
         ]);
+        // password policy check
+        if ($request->new_password == $request->old_password) {
+            $notification = array(
+                'message' => 'New Password Cannot Be Same As Old Password',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        // password policy check 8 char
+        if (strlen($request->new_password) < 8) {
+            $notification = array(
+                'message' => 'Password Must Be At Least 8 Characters Long',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        // password policy check 1 uppercase
+        if (!preg_match('/[A-Z]/', $request->new_password)) {
+            $notification = array(
+                'message' => 'Password Must Contain At Least 1 Uppercase Letter',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        // password policy check 1 lowercase
+        if (!preg_match('/[a-z]/', $request->new_password)) {
+            $notification = array(
+                'message' => 'Password Must Contain At Least 1 Lowercase Letter',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        // password policy check 1 number
+        if (!preg_match('/[0-9]/', $request->new_password)) {
+            $notification = array(
+                'message' => 'Password Must Contain At Least 1 Number',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        // password policy check 1 special char
+        if (!preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $request->new_password)) {
+            $notification = array(
+                'message' => 'Password Must Contain At Least 1 Special Character',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
         //match old password
         if (!Hash::check($request->old_password, auth::user()->password)) {
             $notification = array(
