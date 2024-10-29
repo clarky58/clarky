@@ -1,7 +1,7 @@
 <nav class="sidebar">
     <div class="sidebar-header">
       <a href="#" class="sidebar-brand">
-        MMCZ<span>F.M.S</span>
+        R.D.C<span>FMS</span>
       </a>
       <div class="sidebar-toggler not-active">
         <span></span>
